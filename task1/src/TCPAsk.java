@@ -1,11 +1,11 @@
-import java.net.*;
-import java.io.*;
 import tcpclient.TCPClient;
 
- public class TCPAsk {
-    public static void main( String[] args) {
-        String hostname = "java.lab.ssvl.kth.se";
-        int port = 13;
+import java.io.IOException;
+
+public class TCPAsk {
+    public static void main(String[] args) {
+        String hostname;
+        int port;
         String serverInput = null;
 
         try {
@@ -24,15 +24,14 @@ import tcpclient.TCPClient;
                 }
                 serverInput = builder.toString();
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.err.println("Usage: TCPAsk host port <data to server>");
             return;
         }
         try {
             String serverOutput = TCPClient.askServer(hostname, port, serverInput);
             System.out.printf("%s:%d says:\n%s", hostname, port, serverOutput);
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             System.err.println(ex);
         }
     }
