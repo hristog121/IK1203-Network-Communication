@@ -40,10 +40,9 @@ public class HTTPEcho {
     }
 
     public static void handleClientRequest() throws IOException {
-        String httpReq = "";
+
         clientSocket = serverSocket.accept();
         System.out.println("Connected ....");
-        clientSocket.setSoTimeout(1500);
 
         //Input from the client
         inPut = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -53,28 +52,21 @@ public class HTTPEcho {
         try {
 
             StringBuilder build = new StringBuilder();
-            long stopTime = System.currentTimeMillis() + 1500;
-            String back;
+            //Needed for the check
+            String back = ".";
 
-            while ((back = inPut.readLine()) != null) {
-                build.append(back);
-                build.append('\n');
-
-                httpReq = build.toString();
-
-                if (System.currentTimeMillis() > stopTime) {
-                    throw new SocketTimeoutException();
-                }
+            while (!back.equals("")){
+                back = inPut.readLine();
+                build.append(back+"\r\n");
             }
-        } catch (SocketTimeoutException e) {
-            System.out.println("Client says: \n" + httpReq);
-            outPut.println("HTTP/1.1 200 ok");
-            outPut.println("Content-type: text/plain");
-            outPut.println("\r\n");
-            outPut.println(httpReq);
-        } finally {
+
+            String endOfAll = "HTTP/1.1 200 OK\r\n\r\n" + build.toString();
+            outPut.println(endOfAll);
             clientSocket.close();
-            System.out.println("Connection closed... :(");
+
+        } catch (IOException ex){
+            System.err.println("Something went wrong");
+            System.exit(1);
         }
     }
 }
